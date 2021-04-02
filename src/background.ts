@@ -8,3 +8,5 @@ chrome.runtime.onInstalled.addListener(() => {
     { url: [{ urlMatches: 'google.com' }] }
   );
 });
+
+console.log(`mom I'm running`);
