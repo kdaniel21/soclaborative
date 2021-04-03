@@ -1,24 +1,38 @@
 import { Injectable } from '@angular/core';
-import { from, Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class StorageService {
-  private syncStorage = browser.storage.sync;
+  private storage = chrome.storage.sync;
 
   constructor() {}
 
-  get(key: string): Observable<any> {
-    return from(this.syncStorage.get(key)).pipe(map((res) => res[key]));
+  get(key?: string): Observable<any> {
+    return new Observable((observer) =>
+      this.storage.get(key, (data) => {
+        observer.next(data[key]);
+        observer.complete();
+      })
+    );
   }
 
   set(data: any): Observable<void> {
-    return from(this.syncStorage.set(data));
+    return new Observable((observer) =>
+      this.storage.set(data, () => {
+        observer.next();
+        observer.complete();
+      })
+    );
   }
 
   remove(key: string): Observable<void> {
-    return from(this.syncStorage.remove(key));
+    return new Observable((observer) =>
+      this.storage.remove(key, () => {
+        observer.next();
+        observer.complete();
+      })
+    );
   }
 }

@@ -13,12 +13,13 @@
     "target": "es6",
     "lib": [
       "es2018",
-      "dom"
+      "dom",
+      "esnext.asynciterable"
     ],
-    "typeRoots": ["node_modules/@types", "node_modules/web-ext-types"]
+    "allowSyntheticDefaultImports": true
   },
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
-    "strictInjectionParameters": true,
+    "strictInjectionParameters": true
   }
 }

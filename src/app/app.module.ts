@@ -12,6 +12,8 @@ import {
   TUI_ICONS_PATH,
 } from '@taiga-ui/core';
 import { PopupModule } from './popup/popup.module';
+import { GraphQLModule } from './graphql.module';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [AppComponent],
@@ -23,6 +25,8 @@ import { PopupModule } from './popup/popup.module';
     TuiThemeNightModule,
     TuiModeModule,
     PopupModule,
+    GraphQLModule,
+    HttpClientModule,
   ],
   providers: [
     {

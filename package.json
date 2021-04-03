@@ -19,10 +19,13 @@
     "@angular/platform-browser": "~11.2.8",
     "@angular/platform-browser-dynamic": "~11.2.8",
     "@angular/router": "~11.2.8",
+    "@apollo/client": "^3.0.0",
     "@taiga-ui/cdk": "^2.7.0",
     "@taiga-ui/core": "^2.7.0",
     "@taiga-ui/icons": "^2.7.0",
     "@taiga-ui/kit": "^2.7.0",
+    "apollo-angular": "^2.4.0",
+    "graphql": "^15.0.0",
     "rxjs": "~6.6.7",
     "tslib": "^1.10.0",
     "zone.js": "~0.10.2"
@@ -60,7 +63,6 @@
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
     "typescript": "~4.1.5",
-    "web-ext-types": "^3.2.1",
     "webpack-extension-reloader": "^1.1.4"
   }
 }

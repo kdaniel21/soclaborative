@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { ChromeStorageService } from '../storage/chrome-storage.service';
+import { combineLatest } from 'rxjs';
+import { map } from 'rxjs/operators';
+import { StorageService } from '../storage.service';
 
 type Step = { name: string; formControlName: string };
 
@@ -19,11 +21,7 @@ export class JoinComponent implements OnInit {
 
   joinForm: FormGroup;
 
-  constructor(
-    formBuilder: FormBuilder,
-    private route: ActivatedRoute,
-    private chromeStorageService: ChromeStorageService
-  ) {
+  constructor(formBuilder: FormBuilder, private route: ActivatedRoute, public storageService: StorageService) {
     this.joinForm = formBuilder.group({
       roomCode: [null, Validators.required],
       name: [null, [Validators.required, Validators.minLength(3)]],
@@ -38,21 +36,23 @@ export class JoinComponent implements OnInit {
     return this.steps[this.activeStepIndex];
   }
 
-  async ngOnInit() {
-    const { roomCode } = this.route.snapshot.params;
-    let { name } = this.route.snapshot.params;
+  ngOnInit() {
+    const storedName$ = this.storageService.get('name');
+    const routeParams$ = this.route.params;
 
-    if (!name) {
-      name = await this.chromeStorageService.get('name');
-    }
-
-    this.joinForm.patchValue({ roomCode, name });
+    combineLatest([storedName$, routeParams$])
+      .pipe(map(([storedName, { name, roomCode }]) => ({ name: name || storedName, roomCode })))
+      .subscribe({
+        next: ({ name, roomCode }) => {
+          this.joinForm.patchValue({ name, roomCode });
+        },
+      });
   }
 
-  async onJoin() {
-    const { roomCode, name } = this.joinForm.value;
+  onJoin() {
+    const { name } = this.joinForm.value;
 
-    await this.chromeStorageService.set({ name });
+    this.storageService.set({ name }).subscribe();
   }
 
   onNext() {
