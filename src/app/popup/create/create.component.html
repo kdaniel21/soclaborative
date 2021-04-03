@@ -1,0 +1,26 @@
+<form [formGroup]="createForm" (ngSubmit)="onCreateRoom()">
+  <div class="tui-form__header">Create new room</div>
+  <div class="tui-text__body-l">
+    You'll receive a code that you can share with others and the collaboration
+    can begin!
+  </div>
+
+  <div class="tui-form__row">
+    <tui-input formControlName="name">
+      Room name
+    </tui-input>
+    <tui-field-error formControlName="name"></tui-field-error>
+  </div>
+
+  <div class="tui-form__buttons tui-form__buttons_align_end">
+    <button
+      tuiButton
+      type="submit"
+      class="tui-form__button"
+      size="m"
+      [disabled]="createForm.invalid"
+    >
+      Create
+    </button>
+  </div>
+</form>

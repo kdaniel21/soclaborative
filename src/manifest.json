@@ -3,7 +3,7 @@
   "version": "1.0",
   "description": "Build an Extension with Angular",
   "manifest_version": 2,
-  "permissions": ["activeTab", "webNavigation"],
+  "permissions": ["activeTab", "webNavigation", "storage"],
   "background": {
     "scripts": ["background-es2015.js", "runtime-es2015.js"]
   },

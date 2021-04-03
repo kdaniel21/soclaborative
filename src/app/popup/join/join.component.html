@@ -1,0 +1,49 @@
+<div class="stepper tui-space_bottom-3">
+  <tui-stepper [(activeItemIndex)]="activeStepIndex">
+    <button
+      *ngFor="let step of steps; index as index"
+      tuiStep
+      [disabled]="activeStepIndex < index"
+      [state]="getStepState(step, index)"  
+    >
+      {{ step.name }}
+    </button>
+  </tui-stepper>
+</div>
+
+<form [formGroup]="joinForm">
+  <div *ngIf="activeStepIndex === 0" class="tui-form__row">
+    <tui-input
+      formControlName="roomCode"
+      tuiTextfieldSize="l"
+      tuiHintContent="This name will appear next to your answers."
+    >
+      Room code
+    </tui-input>
+    <tui-field-error formControlName="roomCode"></tui-field-error>
+  </div>
+
+  <div *ngIf="activeStepIndex === 1" class="tui-form__row">
+    <tui-input
+      formControlName="name"
+      tuiTextfieldSize="l"
+      tuiHintContent="This name will appear next to your answers."
+      required
+    >
+      Name
+    </tui-input>
+    <tui-field-error formControlName="name"></tui-field-error>
+  </div>
+
+  <div class="tui-form__buttons tui-form__buttons_align_end">
+    <button
+      tuiButton
+      class="tui-form__button"
+      size="m"
+      (click)="isLastStep ? onJoin() : onNext()"
+      [disabled]="isLastStep ? joinForm.invalid : joinForm.controls[currentStep.formControlName].invalid"
+    >
+      {{ isLastStep ? "Join" : "Next" }}
+    </button>
+  </div>
+</form>

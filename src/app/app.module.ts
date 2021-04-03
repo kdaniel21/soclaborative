@@ -1,18 +1,35 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import {
+  iconsPathFactory,
+  TuiModeModule,
+  TuiRootModule,
+  TuiThemeNightModule,
+  TUI_ICONS_PATH,
+} from '@taiga-ui/core';
+import { PopupModule } from './popup/popup.module';
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    TuiRootModule,
+    TuiThemeNightModule,
+    TuiModeModule,
+    PopupModule,
   ],
-  providers: [],
-  bootstrap: [AppComponent]
+  providers: [
+    {
+      provide: TUI_ICONS_PATH,
+      useValue: iconsPathFactory('assets/taiga-ui/icons'),
+    },
+  ],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

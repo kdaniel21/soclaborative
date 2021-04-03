@@ -26,9 +26,20 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "aot": true,
-            "assets": ["src/favicon.ico", "src/assets", "src/manifest.json"],
+            "assets": [
+              "src/favicon.ico",
+              "src/assets",
+              "src/manifest.json",
+              {
+                "glob": "**/*",
+                "input": "node_modules/@taiga-ui/icons/src",
+                "output": "assets/taiga-ui/icons"
+              }
+            ],
             "styles": [
-              "src/styles.scss"
+              "src/styles.scss",
+              "node_modules/@taiga-ui/core/styles/taiga-ui-global.less",
+              "node_modules/@taiga-ui/core/styles/taiga-ui-theme.less"
             ],
             "scripts": []
           },
@@ -106,15 +117,11 @@
           }
         },
         "lint": {
-          "builder": "@angular-devkit/build-angular:tslint",
+          "builder": "@angular-eslint/builder:lint",
           "options": {
-            "tsConfig": [
-              "tsconfig.app.json",
-              "tsconfig.spec.json",
-              "e2e/tsconfig.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
+            "lintFilePatterns": [
+              "src/**/*.ts",
+              "src/**/*.html"
             ]
           }
         },
@@ -131,6 +138,7 @@
           }
         }
       }
-    }},
+    }
+  },
   "defaultProject": "socrative-collab"
 }
