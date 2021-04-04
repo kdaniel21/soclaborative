@@ -1,3 +1,6 @@
 module.exports = {
-  entry: { background: "src/background.ts" },
+  entry: {
+    background: "src/scripts/background.ts",
+    content: "src/scripts/content-injector.ts",
+  },
 };
