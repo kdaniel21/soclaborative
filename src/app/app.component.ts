@@ -14,8 +14,8 @@ import { Component } from '@angular/core';
   styles: [
     `
       tui-root {
-        width: 500px;
-        height: 350px;
+        width: 350px;
+        height: 100%;
         overflow-x: hidden;
       }
     `,

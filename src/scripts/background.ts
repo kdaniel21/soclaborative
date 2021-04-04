@@ -1,10 +1,5 @@
-chrome.browserAction.onClicked.addListener(tab => {
-  console.log('message sent');
+console.log('Background script running!');
+
+chrome.browserAction.onClicked.addListener((tab) => {
   chrome.tabs.sendMessage(tab.id, 'toggle');
 });
-
-chrome.tabs.onCreated.addListener(tab => {
-  console.log('tab created');
-});
-
-console.log('background running');
