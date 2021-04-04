@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { AuthorizationService } from './authorization.service';
 
 @Injectable({ providedIn: 'root' })
@@ -10,7 +10,8 @@ export class UnauthorizedOnlyGuard implements CanActivate {
 
   canActivate(): Observable<boolean | UrlTree> {
     return this.authorizationService.isAuthenticated$.pipe(
-      map((isAuthenticated) => (isAuthenticated ? this.router.createUrlTree(['/collaborate']) : true))
+      map((isAuthenticated) => (isAuthenticated ? this.router.createUrlTree(['/collaborate']) : true)),
+      tap((res) => console.log('can activate', res))
     );
   }
 }

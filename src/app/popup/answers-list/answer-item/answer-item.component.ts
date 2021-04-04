@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { GetAnswersQuery, GetParticipantsQuery } from 'src/generated/graphql';
+import { GetAnswersQuery } from 'src/generated/graphql';
 
 @Component({
   selector: 'app-answer-item',
@@ -8,8 +8,11 @@ import { GetAnswersQuery, GetParticipantsQuery } from 'src/generated/graphql';
 })
 export class AnswerItemComponent {
   @Input() answer:
-    | GetParticipantsQuery['getQuestionParticipants'][number]
-    | GetAnswersQuery['getAnswersByText'][number];
+    Partial<GetAnswersQuery['getAnswersByText'][number]>;
 
-  constructor() {}
+  constructor() { }
+
+  get isLoading(): boolean {
+    return !!this.answer.text;
+  }
 }

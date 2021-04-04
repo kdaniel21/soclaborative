@@ -2,16 +2,16 @@
   <div class="tui-island__content">
     <figure class="tui-island__figure">
       <tui-avatar
-        [text]="participantName"
+        [text]="answer.participantName"
         [rounded]="true"
         [autoColor]="true"
       ></tui-avatar>
     </figure>
     <div>
       <h3 class="tui-island__title">
-        {{ participantName }}
+        {{ answer.participantName }}
         <tui-svg
-          *ngIf="isValidated"
+          *ngIf="answer.isValidated"
           class="icon"
           src="tuiIconCheckCircle"
           tuiHint="This answer is validated by the creator of this quiz."
@@ -22,7 +22,7 @@
         class="tui-island__paragraph"
         [class.tui-skeleton]="isLoading"
       >
-        {{ answerText }}
+        {{ answer.text }}
       </p>
     </div>
   </div>

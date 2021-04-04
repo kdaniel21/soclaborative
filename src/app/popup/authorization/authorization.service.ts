@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
-import { BehaviorSubject, from, Observable, of } from 'rxjs';
-import { catchError, distinctUntilChanged, map, switchMap, tap } from 'rxjs/operators';
+import { BehaviorSubject, forkJoin, from, NEVER, Observable, of } from 'rxjs';
+import { catchError, delay, distinctUntilChanged, map, mergeMap, share, switchMap, tap } from 'rxjs/operators';
 import { GetParticipantGQL, JoinRoomGQL } from 'src/generated/graphql';
 import { StorageService } from '../storage.service';
 
@@ -10,19 +10,17 @@ import { StorageService } from '../storage.service';
   providedIn: 'root',
 })
 export class AuthorizationService {
-  refreshParticipantSubject = new BehaviorSubject<void>(undefined);
+  participantSubject = new BehaviorSubject(undefined);
+  participant$ = this.participantSubject.asObservable();
+  get participant() {
+    return this.participantSubject.value;
+  }
 
-  participant$ = this.refreshParticipantSubject.pipe(
-    tap(() => console.log('refresh')),
-    switchMap(() => from(this.apollo.client.resetStore())),
-    switchMap(() => this.getParticipantGQL.fetch(null, { fetchPolicy: 'network-only' })),
-    tap((res) => console.log('res1', res)),
-    map((res) => res.data.getParticipant),
-    // catchError(() => of(undefined)),
-    tap((res) => console.log('result', res))
-  );
-
-  isAuthenticated$ = this.participant$.pipe(map((participant) => !!participant));
+  isAuthenticatedSubject = new BehaviorSubject(false);
+  isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
+  get isAuthenticated() {
+    return this.isAuthenticatedSubject.value;
+  }
 
   constructor(
     private getParticipantGQL: GetParticipantGQL,
@@ -30,21 +28,43 @@ export class AuthorizationService {
     private storageService: StorageService,
     private router: Router,
     private apollo: Apollo
-  ) {}
+  ) {
+    this.storageService
+      .get('jwtToken')
+      .pipe(
+        switchMap((jwtToken) => (jwtToken ? this.getParticipantGQL.fetch() : NEVER)),
+        tap((res) => {
+          this.participantSubject.next(res.data.getParticipant);
+          this.isAuthenticatedSubject.next(true);
+          this.router.navigate(['/collaborate']);
+        })
+      )
+      .subscribe();
+  }
 
   joinRoom(roomCode: string, name: string) {
     return this.joinRoomGQL.mutate({ name, code: roomCode }).pipe(
       map((res) => res.data.joinRoom.jwtToken),
-      switchMap((jwtToken) => this.storageService.set({ name, jwtToken })),
-      tap(() => this.refreshParticipantSubject.next()),
-      tap(() => this.router.navigate(['/collaborate']))
+      mergeMap((jwtToken) =>
+        forkJoin([this.storageService.set({ name, jwtToken }), from(this.apollo.client.resetStore())])
+      ),
+      switchMap(() => this.getParticipantGQL.fetch(null, { fetchPolicy: 'network-only' })),
+      map((res) => res.data.getParticipant),
+      tap((participant) => {
+        this.participantSubject.next(participant);
+        this.isAuthenticatedSubject.next(true);
+
+        this.router.navigate(['/']);
+      })
     );
   }
 
   leaveRoom(): Observable<void> {
     return this.storageService.remove('jwtToken').pipe(
-      tap(() => this.refreshParticipantSubject.next())
-      // tap(() => this.router.navigate(['/']))
+      tap(() => {
+        this.isAuthenticatedSubject.next(false);
+        this.router.navigate(['/']);
+      })
     );
   }
 }

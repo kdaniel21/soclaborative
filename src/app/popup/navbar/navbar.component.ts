@@ -7,9 +7,7 @@ import { AuthorizationService } from '../authorization/authorization.service';
   styleUrls: ['./navbar.component.scss'],
 })
 export class NavbarComponent {
-  isAuthenticated$ = this.authorizationService.isAuthenticated$;
-
-  constructor(private authorizationService: AuthorizationService) {}
+  constructor(public authorizationService: AuthorizationService) {}
 
   onLeaveRoom() {
     this.authorizationService.leaveRoom().subscribe();

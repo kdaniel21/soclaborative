@@ -10,7 +10,8 @@ export class AuthorizedOnlyGuard implements CanActivate {
 
   canActivate(): Observable<boolean | UrlTree> {
     return this.authorizationService.isAuthenticated$.pipe(
-      map((isAuthenticated) => (isAuthenticated ? true : this.router.createUrlTree(['/join'])))
+      map((isAuthenticated) => (isAuthenticated ? true : this.router.createUrlTree(['/join']))),
+      tap((res) => console.log('can activate', res))
     );
   }
 }
