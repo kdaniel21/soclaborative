@@ -7,11 +7,10 @@ chrome.browserAction.onClicked.addListener((tab) => {
 
 // MESSAGE MIDDLEMAN BETWEEN POPUP AND CONTENT SCRIPTS
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  console.log(`New ${request.type} message!`);
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    chrome.tabs.sendMessage(tabs[0].id, request, ({ data }) => {
-      if (data) {
-        sendResponse({ data });
-      }
+    chrome.tabs.sendMessage(tabs[0].id, request, () => {
+      console.log(`Forwarded message!`);
     });
   });
 

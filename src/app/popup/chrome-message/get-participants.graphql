@@ -1,0 +1,5 @@
+query getParticipants($question: String!) {
+  getQuestionParticipants(question: $question) {
+    participantName
+  }
+}

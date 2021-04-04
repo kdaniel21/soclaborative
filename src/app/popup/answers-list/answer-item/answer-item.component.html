@@ -1,0 +1,29 @@
+<tui-island class="tui-space_bottom-2">
+  <div class="tui-island__content">
+    <figure class="tui-island__figure">
+      <tui-avatar
+        [text]="participantName"
+        [rounded]="true"
+        [autoColor]="true"
+      ></tui-avatar>
+    </figure>
+    <div>
+      <h3 class="tui-island__title">
+        {{ participantName }}
+        <tui-svg
+          *ngIf="isValidated"
+          class="icon"
+          src="tuiIconCheckCircle"
+          tuiHint="This answer is validated by the creator of this quiz."
+          tuiHintDirection="right"
+        ></tui-svg>
+      </h3>
+      <p
+        class="tui-island__paragraph"
+        [class.tui-skeleton]="isLoading"
+      >
+        {{ answerText }}
+      </p>
+    </div>
+  </div>
+</tui-island>

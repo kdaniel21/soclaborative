@@ -8,6 +8,8 @@ export const initSubmitObserver = () => {
 
   const bodyObserver = new MutationObserver(bodyObserverCallback);
   bodyObserver.observe(body, defaultObserverConfig);
+
+  bodyObserverCallback();
 };
 
 const bodyObserverCallback = () => {
@@ -15,6 +17,7 @@ const bodyObserverCallback = () => {
   const hasFeedbackPopup = !!feedbackPopup;
   if (hasFeedbackPopup) {
     onFeedbackReceived();
+    return;
   }
 
   const submitButton = document.querySelector('#submit-button');
@@ -22,6 +25,7 @@ const bodyObserverCallback = () => {
 
   if (hasSubmitButton) {
     submitButton.addEventListener('click', onSubmitClicked);
+    return;
   }
 };
 
@@ -34,7 +38,6 @@ const onFeedbackReceived = () => {
 };
 
 const onSubmitClicked = (): void => {
-  console.log('submit clicked');
   const isMultiSelect = !!document.querySelector('.mc-answer-option.selected');
 
   const submittedAnswer = isMultiSelect ? getSelectedOption() : getAnswerFromTextarea();
@@ -63,9 +66,5 @@ const submitAnswer = (answerText: string, isValidated: boolean = false): void =>
 
   const event = new SubmitAnswerEvent({ text: answerText, isValidated });
 
-  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    chrome.tabs.sendMessage(tabs[0].id, event, (res) => {
-      console.log(`SubmitAnswer message sent!`, res);
-    });
-  });
+  chrome.runtime.sendMessage(event, (res) => console.log(`SubmitAnswer message sent!`, res));
 };

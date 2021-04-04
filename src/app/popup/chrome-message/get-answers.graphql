@@ -1,0 +1,7 @@
+query getAnswers($questionText: String!) {
+  getAnswersByText(question: $questionText) {
+    text
+    isValidated
+    participantName
+  }
+}

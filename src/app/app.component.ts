@@ -11,15 +11,7 @@ import { Component } from '@angular/core';
       </div>
     </tui-root>
   `,
-  styles: [
-    `
-      tui-root {
-        width: 350px;
-        height: 100%;
-        overflow-x: hidden;
-      }
-    `,
-  ],
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
   title = 'socrative-collab';

@@ -1,0 +1,14 @@
+tui-root::ng-deep {
+  width: 350px;
+  height: 100%;
+  overflow-x: hidden;
+
+  & > tui-portal-host > .content {
+    display: flex;
+    flex-direction: column;
+
+    & > div {
+      flex-grow: 1;
+    }
+  }
+}

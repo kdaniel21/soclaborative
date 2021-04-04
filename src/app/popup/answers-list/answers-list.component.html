@@ -1,0 +1,18 @@
+<div class="container">
+  <div class="tui-text_body-l tui-space_bottom-3 tui-space_left-1">
+    <label tuiLabel label="Current Question">
+      {{ currentQuestion$ | async }}
+    </label>
+  </div>
+
+  <tui-scrollbar>
+    <app-answer-item
+      *ngFor="let answer of answersAndParticipants$ | async "
+      [answer]="answer"
+    ></app-answer-item>
+  </tui-scrollbar>
+</div>
+
+<!-- <h5 *ngIf="!answers.length" class="tui-text_h5">
+    Nobody has answered this question yet. :
+  </h5> -->
