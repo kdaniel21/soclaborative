@@ -1,4 +1,5 @@
 import { defaultObserverConfig } from './default-observer-config';
+import { SubmitAnswerEvent } from './events';
 
 export const initSubmitObserver = () => {
   console.log('Initializing answer & feedback observer...');
@@ -59,4 +60,12 @@ const getAnswerFromTextarea = (): string => {
 
 const submitAnswer = (answerText: string, isValidated: boolean = false): void => {
   console.log(`Submitting answer ${answerText} (validated: ${isValidated})`);
+
+  const event = new SubmitAnswerEvent({ text: answerText, isValidated });
+
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    chrome.tabs.sendMessage(tabs[0].id, event, (res) => {
+      console.log(`SubmitAnswer message sent!`, res);
+    });
+  });
 };
