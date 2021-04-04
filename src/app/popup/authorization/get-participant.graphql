@@ -1,0 +1,8 @@
+query getParticipant {
+  getParticipant {
+    name
+    id
+    roomName
+    roomId
+  }
+}

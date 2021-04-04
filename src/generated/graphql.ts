@@ -22,6 +22,7 @@ export type Query = {
   status: HealthStatus;
   getAnswersByText: Array<Answer>;
   getQuestionParticipants: Array<QuestionParticipant>;
+  getParticipant: Participant;
 };
 
 
@@ -56,6 +57,14 @@ export type Answer = {
 export type QuestionParticipant = {
   __typename?: 'QuestionParticipant';
   participantName: Scalars['String'];
+};
+
+export type Participant = {
+  __typename?: 'Participant';
+  name: Scalars['String'];
+  id: Scalars['ID'];
+  roomName: Scalars['String'];
+  roomId: Scalars['ID'];
 };
 
 export type Mutation = {
@@ -131,6 +140,17 @@ export type RoomJoined = {
   jwtToken: Scalars['String'];
 };
 
+export type GetParticipantQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetParticipantQuery = (
+  { __typename?: 'Query' }
+  & { getParticipant: (
+    { __typename?: 'Participant' }
+    & Pick<Participant, 'name' | 'id' | 'roomName' | 'roomId'>
+  ) }
+);
+
 export type GetAnswersQueryVariables = Exact<{
   questionText: Scalars['String'];
 }>;
@@ -157,6 +177,54 @@ export type GetParticipantsQuery = (
   )> }
 );
 
+export type CreateRoomMutationVariables = Exact<{
+  name: Scalars['String'];
+}>;
+
+
+export type CreateRoomMutation = (
+  { __typename?: 'Mutation' }
+  & { createRoom: (
+    { __typename?: 'CreatedRoom' }
+    & Pick<CreatedRoom, 'code'>
+  ) }
+);
+
+export type JoinRoomMutationVariables = Exact<{
+  code: Scalars['String'];
+  name: Scalars['String'];
+}>;
+
+
+export type JoinRoomMutation = (
+  { __typename?: 'Mutation' }
+  & { joinRoom: (
+    { __typename?: 'RoomJoined' }
+    & Pick<RoomJoined, 'jwtToken'>
+  ) }
+);
+
+export const GetParticipantDocument = gql`
+    query getParticipant {
+  getParticipant {
+    name
+    id
+    roomName
+    roomId
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class GetParticipantGQL extends Apollo.Query<GetParticipantQuery, GetParticipantQueryVariables> {
+    document = GetParticipantDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
 export const GetAnswersDocument = gql`
     query getAnswers($questionText: String!) {
   getAnswersByText(question: $questionText) {
@@ -190,6 +258,42 @@ export const GetParticipantsDocument = gql`
   })
   export class GetParticipantsGQL extends Apollo.Query<GetParticipantsQuery, GetParticipantsQueryVariables> {
     document = GetParticipantsDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const CreateRoomDocument = gql`
+    mutation createRoom($name: String!) {
+  createRoom(name: $name) {
+    code
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class CreateRoomGQL extends Apollo.Mutation<CreateRoomMutation, CreateRoomMutationVariables> {
+    document = CreateRoomDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const JoinRoomDocument = gql`
+    mutation joinRoom($code: String!, $name: String!) {
+  joinRoom(code: $code, name: $name) {
+    jwtToken
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class JoinRoomGQL extends Apollo.Mutation<JoinRoomMutation, JoinRoomMutationVariables> {
+    document = JoinRoomDocument;
     
     constructor(apollo: Apollo.Apollo) {
       super(apollo);

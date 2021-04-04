@@ -1,0 +1,5 @@
+mutation joinRoom($code: String!, $name: String!) {
+  joinRoom(code: $code, name: $name) {
+    jwtToken
+  }
+}

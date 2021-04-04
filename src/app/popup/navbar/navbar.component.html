@@ -2,15 +2,22 @@
   <!-- TODO: Add logo -->
   <h3>Socrative Collab</h3>
 
-  <tui-tabs>
-    <a tuiTab routerLink="popup/join" routerLinkActive>
-      <tui-svg src="tuiIconLink"></tui-svg>
-      Join
-    </a>
+  {{ isAuthenticated$ | async }}
 
-    <button tuiTab routerLink="popup/create" routerLinkActive>
-      <tui-svg src="tuiIconPlus"></tui-svg>
-      Create
-    </button>
-  </tui-tabs>
+  <ng-container *ngIf="isAuthenticated$ | async; else unauthenticatedTabs">
+    <button tuiButton icon="tuiIconCollapse" size="s" (click)="onLeaveRoom()">Leave Room</button>
+  </ng-container>
+
+  <ng-template #unauthenticatedTabs>
+    <tui-tabs>
+      <a tuiTab routerLink="popup/join" routerLinkActive>
+        <tui-svg src="tuiIconLink"></tui-svg>
+        Join
+      </a>
+      <button tuiTab routerLink="popup/create" routerLinkActive>
+        <tui-svg src="tuiIconPlus"></tui-svg>
+        Create
+      </button>
+    </tui-tabs>
+  </ng-template>
 </header>

@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { AuthorizationService } from '../authorization/authorization.service';
 import { StorageService } from '../storage.service';
 
 type Step = { name: string; formControlName: string };
@@ -21,7 +22,12 @@ export class JoinComponent implements OnInit {
 
   joinForm: FormGroup;
 
-  constructor(formBuilder: FormBuilder, private route: ActivatedRoute, public storageService: StorageService) {
+  constructor(
+    formBuilder: FormBuilder,
+    private route: ActivatedRoute,
+    public storageService: StorageService,
+    private authorizationService: AuthorizationService
+  ) {
     this.joinForm = formBuilder.group({
       roomCode: [null, Validators.required],
       name: [null, [Validators.required, Validators.minLength(3)]],
@@ -38,10 +44,10 @@ export class JoinComponent implements OnInit {
 
   ngOnInit() {
     const storedName$ = this.storageService.get('name');
-    const routeParams$ = this.route.params;
+    const routeQueryParams$ = this.route.queryParams;
 
-    combineLatest([storedName$, routeParams$])
-      .pipe(map(([storedName, { name, roomCode }]) => ({ name: name || storedName, roomCode })))
+    combineLatest([storedName$, routeQueryParams$])
+      .pipe(map(([storedName, { name, code }]) => ({ roomCode: code, name: name || storedName })))
       .subscribe({
         next: ({ name, roomCode }) => {
           this.joinForm.patchValue({ name, roomCode });
@@ -50,9 +56,9 @@ export class JoinComponent implements OnInit {
   }
 
   onJoin() {
-    const { name } = this.joinForm.value;
+    const { name, roomCode } = this.joinForm.value;
 
-    this.storageService.set({ name }).subscribe();
+    this.authorizationService.joinRoom(roomCode, name).subscribe();
   }
 
   onNext() {
