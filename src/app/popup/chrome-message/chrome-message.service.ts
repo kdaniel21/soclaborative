@@ -1,6 +1,6 @@
 import { Injectable, NgZone } from '@angular/core';
 import { Observable } from 'rxjs';
-import { debounce, debounceTime, filter, map, switchMap, withLatestFrom } from 'rxjs/operators';
+import { debounce, debounceTime, filter, map, switchMap, tap, withLatestFrom } from 'rxjs/operators';
 import { SubmitAnswerGQL } from 'src/generated/graphql';
 import { ContentEvent, EventType } from 'src/scripts/content/events';
 
@@ -21,9 +21,9 @@ export class ChromeMessageService {
 
   answerSubmit$ = this.onMessage.pipe(
     filter((res) => res.type === EventType.submitAnswer),
-    debounceTime(300),
     map((res) => res.data),
     withLatestFrom(this.currentQuestion$),
+    debounceTime(300),
     switchMap(([{ text, isValidated = false }, currentQuestion]) =>
       this.submitAnswerGQL.mutate({ question: currentQuestion, answer: text, isValidated })
     )
