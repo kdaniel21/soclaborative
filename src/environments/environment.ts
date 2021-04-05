@@ -4,8 +4,8 @@
 
 export const environment = {
   production: false,
-  graphqlHttpUri: 'https://192.168.0.199:3000/graphql',
-  graphqlWsUri: 'wss://192.168.0.199:3000/graphql',
+  graphqlHttpUri: 'https://socrative-collab-api.herokuapp.com/graphql',
+  graphqlWsUri: 'wss://socrative-collab-api.herokuapp.com/graphql',
 };
 
 /*
