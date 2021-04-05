@@ -2,7 +2,7 @@ import { Injectable, NgZone } from '@angular/core';
 import { Observable } from 'rxjs';
 import { filter, map, switchMap, withLatestFrom } from 'rxjs/operators';
 import { SubmitAnswerGQL } from 'src/generated/graphql';
-import { ContentEvent, EventType } from 'src/scripts/content/events';
+import { ContentEvent, CurrentQuestionQueryEvent, EventType } from 'src/scripts/content/events';
 
 @Injectable({
   providedIn: 'root',
@@ -30,5 +30,18 @@ export class ChromeMessageService {
 
   constructor(private submitAnswerGQL: SubmitAnswerGQL, private ngZone: NgZone) {
     this.answerSubmit.subscribe();
+
+    this.sendMessage(new CurrentQuestionQueryEvent()).subscribe();
+  }
+
+  sendMessage(event: ContentEvent): Observable<void> {
+    return new Observable((observer) =>
+      chrome.runtime.sendMessage(event, () =>
+        this.ngZone.run(() => {
+          observer.next();
+          observer.complete();
+        })
+      )
+    );
   }
 }
