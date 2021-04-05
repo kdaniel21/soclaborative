@@ -1,0 +1,11 @@
+mutation submitAnswer(
+  $question: String!
+  $answer: String!
+  $isValidated: Boolean
+) {
+  submitAnswer(
+    params: { question: $question, answer: $answer, isValidated: $isValidated }
+  ) {
+    message
+  }
+}

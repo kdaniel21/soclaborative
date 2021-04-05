@@ -1,7 +1,15 @@
-import { ChangeDetectorRef, Component } from '@angular/core';
-import { combineLatest } from 'rxjs';
-import { map, switchMap, takeLast, tap } from 'rxjs/operators';
-import { GetAnswersGQL, GetParticipantsGQL } from 'src/generated/graphql';
+import { Component } from '@angular/core';
+import { combineLatest, merge, Observable } from 'rxjs';
+import { map, scan, switchMap } from 'rxjs/operators';
+import {
+  Answer,
+  GetAnswersGQL,
+  GetParticipantsGQL,
+  NewAnswerGQL,
+  NewParticipantGQL,
+  Participant,
+  QuestionParticipantChangeAction,
+} from 'src/generated/graphql';
 import { ChromeMessageService } from '../chrome-message/chrome-message.service';
 
 @Component({
@@ -10,51 +18,47 @@ import { ChromeMessageService } from '../chrome-message/chrome-message.service';
   styleUrls: ['./answers-list.component.scss'],
 })
 export class AnswersListComponent {
-  // sampleData = [
-  //   {
-  //     participantName: 'Daniel',
-  //     answer: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Ratione, dicta!',
-  //     isValidated: true,
-  //   },
-  //   {
-  //     participantName: 'Daniel',
-  //     answer: 'Lorem ipsum dolor Ratione, dicta!',
-  //     isValidated: true,
-  //   },
-  //   {
-  //     participantName: 'Daniel',
-  //     answer: 'Lorem ipsum dolor sit amet consectetur adipisicing elit.',
-  //     isValidated: true,
-  //     isLoading: true,
-  //   },
-  // ];
-  // sampleData = [];
+  currentQuestion$ = this.chromeMessageService.currentQuestion;
 
-  currentQuestion$ = this.chromeMessageService.currentQuestion.pipe(
-    tap(() => {
-      this.changeDetectorRef.detectChanges();
-    })
+  answers$: Observable<Answer[]> = this.currentQuestion$.pipe(
+    switchMap((questionText) =>
+      merge(
+        this.getAnswersGQL.fetch({ questionText }).pipe(map((res) => res.data.getAnswersByText)),
+        this.newAnswerGQL.subscribe().pipe(map((res) => res.data.newQuestionAnswer))
+      )
+    ),
+    scan((acc, answer) => (Array.isArray(answer) ? [...answer] : [...acc, answer]), [])
   );
 
-  answers$ = this.currentQuestion$.pipe(
-    // takeLast(1),
-    tap((res) => console.log('curre', res)),
-    switchMap((currentQuestion) => this.getAnswersGQL.fetch({ questionText: currentQuestion })),
-    map((res) => res.data.getAnswersByText)
+  participants$: Observable<Participant[]> = this.currentQuestion$.pipe(
+    switchMap((question) =>
+      merge(
+        this.getParticipantsGQL.fetch({ question }).pipe(map((res) => res.data.getQuestionParticipants)),
+        this.newParticipantGQL.subscribe().pipe(map((res) => res.data.newQuestionParticipant))
+      )
+    ),
+    scan((acc, participant) => {
+      if (Array.isArray(participant)) {
+        return [...participant];
+      }
+
+      if (participant.action === QuestionParticipantChangeAction.Join) {
+        return [...acc, participant];
+      }
+
+      return acc.filter((addedParticipant) => addedParticipant.participantName !== participant.participantName);
+    }, [])
   );
 
-  participants$ = this.currentQuestion$.pipe(
-    // takeLast(1),
-    switchMap((currentQuestion) => this.getParticipantsGQL.fetch({ question: currentQuestion })),
-    map((res) => res.data.getQuestionParticipants)
+  combinedAnswers$ = combineLatest([this.answers$, this.participants$]).pipe(
+    map(([answers, participants]) => [...answers, ...participants])
   );
-
-  answersAndParticipants$ = combineLatest([this.answers$, this.participants$]);
 
   constructor(
     public chromeMessageService: ChromeMessageService,
-    private changeDetectorRef: ChangeDetectorRef,
     private getAnswersGQL: GetAnswersGQL,
-    private getParticipantsGQL: GetParticipantsGQL
+    private getParticipantsGQL: GetParticipantsGQL,
+    private newAnswerGQL: NewAnswerGQL,
+    private newParticipantGQL: NewParticipantGQL
   ) {}
 }

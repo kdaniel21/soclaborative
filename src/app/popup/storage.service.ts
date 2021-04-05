@@ -10,38 +10,35 @@ export class StorageService {
   constructor(private ngZone: NgZone) {}
 
   get(key?: string): Observable<any> {
-    return this.ngZone.run(
-      () =>
-        new Observable((observer) =>
-          this.storage.get(key, (data) => {
-            observer.next(data[key]);
-            observer.complete();
-          })
-        )
+    return new Observable((observer) =>
+      this.storage.get(key, (data) =>
+        this.ngZone.run(() => {
+          observer.next(data[key]);
+          observer.complete();
+        })
+      )
     );
   }
 
   set(data: any): Observable<void> {
-    return this.ngZone.run(
-      () =>
-        new Observable((observer) =>
-          this.storage.set(data, () => {
-            observer.next();
-            observer.complete();
-          })
-        )
+    return new Observable((observer) =>
+      this.storage.set(data, () =>
+        this.ngZone.run(() => {
+          observer.next();
+          observer.complete();
+        })
+      )
     );
   }
 
   remove(key: string): Observable<void> {
-    return this.ngZone.run(
-      () =>
-        new Observable((observer) =>
-          this.storage.remove(key, () => {
-            observer.next();
-            observer.complete();
-          })
-        )
+    return new Observable((observer) =>
+      this.storage.remove(key, () =>
+        this.ngZone.run(() => {
+          observer.next();
+          observer.complete();
+        })
+      )
     );
   }
 }

@@ -1,0 +1,6 @@
+subscription newParticipant {
+  newQuestionParticipant {
+    participantName
+    action
+  }
+}

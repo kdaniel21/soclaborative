@@ -1,0 +1,7 @@
+subscription newAnswer {
+  newQuestionAnswer {
+    text
+    isValidated
+    participantName
+  }
+}

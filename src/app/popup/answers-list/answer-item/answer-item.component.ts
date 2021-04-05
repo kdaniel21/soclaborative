@@ -13,6 +13,6 @@ export class AnswerItemComponent {
   constructor() { }
 
   get isLoading(): boolean {
-    return !!this.answer.text;
+    return !this.answer.text;
   }
 }

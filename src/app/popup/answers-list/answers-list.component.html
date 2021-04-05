@@ -1,18 +1,26 @@
-<div class="container">
-  <div class="tui-text_body-l tui-space_bottom-3 tui-space_left-1">
-    <label tuiLabel label="Current Question">
-      {{ currentQuestion$ | async }}
-    </label>
+<ng-container *ngIf="currentQuestion$ | async as currentQuestion; else noQuestion">
+  <div class="container">
+    <div class="tui-text_body-l tui-space_bottom-3 tui-space_left-1">
+      <label tuiLabel label="Current Question">
+        {{ currentQuestion }}
+      </label>
+    </div>
+  
+    <ng-container *ngIf="combinedAnswers$ | async as answers; else noAnswers">
+      <tui-scrollbar>
+        <app-answer-item
+          *ngFor="let answer of answers"
+          [answer]="answer"
+        ></app-answer-item>
+      </tui-scrollbar>
+    </ng-container>
   </div>
+  
+  <ng-template #noAnswers>
+    <h5 class="tui-text_h5">Nobody has answered this question yet. :(</h5>
+  </ng-template>
+</ng-container>
 
-  <tui-scrollbar>
-    <app-answer-item
-      *ngFor="let answer of answersAndParticipants$ | async "
-      [answer]="answer"
-    ></app-answer-item>
-  </tui-scrollbar>
-</div>
-
-<!-- <h5 *ngIf="!answers.length" class="tui-text_h5">
-    Nobody has answered this question yet. :
-  </h5> -->
+<ng-template #noQuestion>
+  <h5 class="tui-text_h5">Enter a Socrative quiz to get started.</h5>
+</ng-template>

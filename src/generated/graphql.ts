@@ -119,7 +119,7 @@ export type Subscription = {
 
 export type NewQuestionParticipantPayload = {
   __typename?: 'NewQuestionParticipantPayload';
-  name: Scalars['String'];
+  participantName: Scalars['String'];
   action: QuestionParticipantChangeAction;
 };
 
@@ -175,6 +175,43 @@ export type GetParticipantsQuery = (
     { __typename?: 'QuestionParticipant' }
     & Pick<QuestionParticipant, 'participantName'>
   )> }
+);
+
+export type NewAnswerSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type NewAnswerSubscription = (
+  { __typename?: 'Subscription' }
+  & { newQuestionAnswer: (
+    { __typename?: 'NewAnswerPayload' }
+    & Pick<NewAnswerPayload, 'text' | 'isValidated' | 'participantName'>
+  ) }
+);
+
+export type NewParticipantSubscriptionVariables = Exact<{ [key: string]: never; }>;
+
+
+export type NewParticipantSubscription = (
+  { __typename?: 'Subscription' }
+  & { newQuestionParticipant: (
+    { __typename?: 'NewQuestionParticipantPayload' }
+    & Pick<NewQuestionParticipantPayload, 'participantName' | 'action'>
+  ) }
+);
+
+export type SubmitAnswerMutationVariables = Exact<{
+  question: Scalars['String'];
+  answer: Scalars['String'];
+  isValidated?: Maybe<Scalars['Boolean']>;
+}>;
+
+
+export type SubmitAnswerMutation = (
+  { __typename?: 'Mutation' }
+  & { submitAnswer: (
+    { __typename?: 'AnswerSubmitted' }
+    & Pick<AnswerSubmitted, 'message'>
+  ) }
 );
 
 export type CreateRoomMutationVariables = Exact<{
@@ -258,6 +295,65 @@ export const GetParticipantsDocument = gql`
   })
   export class GetParticipantsGQL extends Apollo.Query<GetParticipantsQuery, GetParticipantsQueryVariables> {
     document = GetParticipantsDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const NewAnswerDocument = gql`
+    subscription newAnswer {
+  newQuestionAnswer {
+    text
+    isValidated
+    participantName
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class NewAnswerGQL extends Apollo.Subscription<NewAnswerSubscription, NewAnswerSubscriptionVariables> {
+    document = NewAnswerDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const NewParticipantDocument = gql`
+    subscription newParticipant {
+  newQuestionParticipant {
+    participantName
+    action
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class NewParticipantGQL extends Apollo.Subscription<NewParticipantSubscription, NewParticipantSubscriptionVariables> {
+    document = NewParticipantDocument;
+    
+    constructor(apollo: Apollo.Apollo) {
+      super(apollo);
+    }
+  }
+export const SubmitAnswerDocument = gql`
+    mutation submitAnswer($question: String!, $answer: String!, $isValidated: Boolean) {
+  submitAnswer(
+    params: {question: $question, answer: $answer, isValidated: $isValidated}
+  ) {
+    message
+  }
+}
+    `;
+
+  @Injectable({
+    providedIn: 'root'
+  })
+  export class SubmitAnswerGQL extends Apollo.Mutation<SubmitAnswerMutation, SubmitAnswerMutationVariables> {
+    document = SubmitAnswerDocument;
     
     constructor(apollo: Apollo.Apollo) {
       super(apollo);

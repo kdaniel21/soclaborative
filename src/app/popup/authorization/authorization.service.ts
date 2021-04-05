@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
-import { BehaviorSubject, forkJoin, from, NEVER, Observable, of } from 'rxjs';
-import { catchError, delay, distinctUntilChanged, map, mergeMap, share, switchMap, tap } from 'rxjs/operators';
+import { BehaviorSubject, forkJoin, from, NEVER, Observable } from 'rxjs';
+import { map, switchMap, tap } from 'rxjs/operators';
 import { GetParticipantGQL, JoinRoomGQL } from 'src/generated/graphql';
 import { StorageService } from '../storage.service';
 
@@ -45,14 +45,16 @@ export class AuthorizationService {
   joinRoom(roomCode: string, name: string) {
     return this.joinRoomGQL.mutate({ name, code: roomCode }).pipe(
       map((res) => res.data.joinRoom.jwtToken),
-      mergeMap((jwtToken) =>
-        forkJoin([this.storageService.set({ name, jwtToken }), from(this.apollo.client.resetStore())])
+      switchMap((jwtToken) =>
+        forkJoin([this.storageService.set({ name, jwtToken }), from(this.apollo.client.cache.reset())])
       ),
-      switchMap(() => this.getParticipantGQL.fetch(null, { fetchPolicy: 'network-only' })),
-      map((res) => res.data.getParticipant),
+      // switchMap(() => this.getParticipantGQL.fetch(null, { fetchPolicy: 'network-only' })),
+      // map((res) => res.data.getParticipant),
       tap((participant) => {
         this.participantSubject.next(participant);
         this.isAuthenticatedSubject.next(true);
+
+        console.log(participant);
 
         this.router.navigate(['/']);
       })

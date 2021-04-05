@@ -1,22 +1,34 @@
-import { Injectable } from '@angular/core';
+import { Injectable, NgZone } from '@angular/core';
 import { Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import { filter, map, switchMap, withLatestFrom } from 'rxjs/operators';
+import { SubmitAnswerGQL } from 'src/generated/graphql';
 import { ContentEvent, EventType } from 'src/scripts/content/events';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ChromeMessageService {
-  onMessage: Observable<ContentEvent> = new Observable((observer) => {
+  onMessage: Observable<ContentEvent> = new Observable((observer) =>
     chrome.runtime.onMessage.addListener((request) => {
-      observer.next(request);
-    });
-  });
+      this.ngZone.run(() => observer.next(request));
+    })
+  );
 
   currentQuestion = this.onMessage.pipe(
     filter((res) => res.type === EventType.questionChange),
     map((res) => res.data.text)
   );
 
-  constructor() {}
+  answerSubmit = this.onMessage.pipe(
+    filter((res) => res.type === EventType.submitAnswer),
+    map((res) => res.data),
+    withLatestFrom(this.currentQuestion),
+    switchMap(([{ text, isValidated = false }, currentQuestion]) =>
+      this.submitAnswerGQL.mutate({ question: currentQuestion, answer: text, isValidated })
+    )
+  );
+
+  constructor(private submitAnswerGQL: SubmitAnswerGQL, private ngZone: NgZone) {
+    this.answerSubmit.subscribe();
+  }
 }

@@ -2,7 +2,7 @@
   <!-- TODO: Add logo -->
   <h3>Socrative Collab</h3>
 
-  <ng-container *ngIf="authorizationService.isAuthenticated; else unauthenticatedTabs">
+  <ng-container *ngIf="authorizationService.isAuthenticated$ | async; else unauthenticatedTabs">
     <button tuiButton icon="tuiIconCollapse" size="s" (click)="onLeaveRoom()">Leave Room</button>
   </ng-container>
 
