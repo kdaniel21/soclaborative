@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { combineLatest, merge, Observable } from 'rxjs';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { combineLatest, merge, Observable, Subscription } from 'rxjs';
 import { map, scan, switchMap } from 'rxjs/operators';
 import {
   Answer,
@@ -10,6 +10,7 @@ import {
   Participant,
   QuestionParticipantChangeAction,
 } from 'src/generated/graphql';
+import { CurrentQuestionQueryEvent } from 'src/scripts/content/events';
 import { ChromeMessageService } from '../chrome-message/chrome-message.service';
 
 @Component({
@@ -17,8 +18,10 @@ import { ChromeMessageService } from '../chrome-message/chrome-message.service';
   templateUrl: './answers-list.component.html',
   styleUrls: ['./answers-list.component.scss'],
 })
-export class AnswersListComponent {
-  currentQuestion$ = this.chromeMessageService.currentQuestion;
+export class AnswersListComponent implements OnInit, OnDestroy {
+  answerSubmitSubscription: Subscription;
+
+  currentQuestion$ = this.chromeMessageService.currentQuestion$;
 
   answers$: Observable<Answer[]> = this.currentQuestion$.pipe(
     switchMap((questionText) =>
@@ -61,4 +64,15 @@ export class AnswersListComponent {
     private newAnswerGQL: NewAnswerGQL,
     private newParticipantGQL: NewParticipantGQL
   ) {}
+
+  ngOnInit() {
+    this.chromeMessageService.answerSubmit$.subscribe();
+    this.chromeMessageService.sendMessage(new CurrentQuestionQueryEvent()).subscribe();
+  }
+
+  ngOnDestroy() {
+    if (this.answerSubmitSubscription) {
+      this.answerSubmitSubscription.unsubscribe();
+    }
+  }
 }

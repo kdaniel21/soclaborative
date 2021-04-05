@@ -7,27 +7,37 @@ import { WebSocketLink } from '@apollo/client/link/ws';
 import { getMainDefinition } from '@apollo/client/utilities';
 import { OperationDefinitionNode } from 'graphql';
 import { environment } from 'src/environments/environment';
+import { Observable } from 'rxjs';
+import { SubscriptionClient } from 'subscriptions-transport-ws';
 
-// TODO: Extract to environment
+const jwtToken = new Observable<string>((observer) =>
+  chrome.storage.sync.get((data) => {
+    observer.next(data.jwtToken);
+    observer.complete();
+  })
+);
 
-// eslint-disable-next-line max-len
-// const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXJ0aWNpcGFudE5hbWUiOiJmb28gYmFyIiwicGFydGljaXBhbnRJZCI6ImNrbjRkNzJiNTAwMzh4MmgzY3U3M3Z1bjMiLCJyb29tSWQiOiJja240ZDNjajMwMDIweDJoMzQ3ajRnMDBtIiwiaWF0IjoxNjE3NjEzMzA0fQ.tXSrfdJz_oHEui7ywOzdwjB_sd0IP2y3CXeQmcwXq_Y';
+const wsClient = new SubscriptionClient(environment.graphqlWsUri, {
+  reconnect: true,
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  connectionParams: async () => ({ Authorization: `Bearer ${await jwtToken.toPromise()}` }),
+});
 
-const jwtToken = new Promise<string>((resolve) => chrome.storage.sync.get((data) => resolve(data.jwtToken)));
+export const restartWebsockets = () => {
+  wsClient.close(true);
+};
 
 export const createApollo = (httpLink: HttpLink): ApolloClientOptions<any> => {
   const http = httpLink.create({ uri: environment.graphqlHttpUri });
 
-  const ws = new WebSocketLink({
-    uri: environment.graphqlWsUri,
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    options: { reconnect: true, connectionParams: async () => ({ Authorization: `Bearer ${await jwtToken}` }) },
-  });
+  const ws = new WebSocketLink(wsClient);
 
-  const authMiddleware = setContext(async (request, { headers }) => ({
+  const authMiddleware = setContext(async (request, { headers }) => {
+    const token = await jwtToken.toPromise();
+
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    headers: { ...headers, Authorization: `Bearer ${await jwtToken}` },
-  }));
+    return { headers: { ...headers, Authorization: `Bearer ${token}` } };
+  });
 
   let link = split(
     ({ query }) => {

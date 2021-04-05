@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { BehaviorSubject, forkJoin, from, NEVER, Observable } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
+import { restartWebsockets } from 'src/app/graphql.module';
 import { GetParticipantGQL, JoinRoomGQL } from 'src/generated/graphql';
 import { StorageService } from '../storage.service';
 
@@ -48,15 +49,16 @@ export class AuthorizationService {
       switchMap((jwtToken) =>
         forkJoin([this.storageService.set({ name, jwtToken }), from(this.apollo.client.cache.reset())])
       ),
-      // switchMap(() => this.getParticipantGQL.fetch(null, { fetchPolicy: 'network-only' })),
-      // map((res) => res.data.getParticipant),
+      switchMap(() => this.getParticipantGQL.fetch(null, { fetchPolicy: 'network-only' })),
+      map((res) => res.data.getParticipant),
       tap((participant) => {
+        restartWebsockets();
+
         this.participantSubject.next(participant);
         this.isAuthenticatedSubject.next(true);
 
-        console.log(participant);
+        this.router.navigate(['/collaborate']);
 
-        this.router.navigate(['/']);
       })
     );
   }
