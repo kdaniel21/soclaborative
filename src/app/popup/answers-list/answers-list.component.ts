@@ -66,7 +66,7 @@ export class AnswersListComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.chromeMessageService.answerSubmit$.subscribe();
+    this.answerSubmitSubscription = this.chromeMessageService.answerSubmit$.subscribe();
     this.chromeMessageService.sendMessage(new CurrentQuestionQueryEvent()).subscribe();
   }
 
