@@ -5,8 +5,21 @@ header.header {
   border-bottom: 1px solid var(--tui-base-04);
   padding: 0 1rem;
 
-  h3 {
-    margin-top: 0.3rem;
-    margin-bottom: 0.3rem;
+  & > div:first-child {
+    display: flex;
+    justify-content: start;
+    align-items: center;
+
+    h3 {
+      margin-top: 0.3rem;
+      margin-bottom: 0.3rem;
+      margin-left: 0.3rem;
+    }
+  
+    .icon {
+      max-width: 24px;
+      max-height: 24px;
+    }
   }
+
 }

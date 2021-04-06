@@ -1,7 +1,11 @@
 {
-  "name": "Socrative Collab",
+  "name": "Soclaborative",
   "version": "1.0",
   "description": "Collaborate easily & effectively on socrative.com",
+  "icons": {
+    "128": "assets/logo128.png",
+    "64": "assets/logo64.png"
+  },
   "manifest_version": 2,
   "permissions": ["storage", "tabs"],
   "background": {

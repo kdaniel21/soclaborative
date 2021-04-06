@@ -9,9 +9,9 @@ import { AuthorizationService } from '../authorization/authorization.service';
 })
 export class NavbarComponent {
   isAuthenticated$ = this.authorizationService.isAuthenticated$;
-  roomName$ = this.authorizationService.participant$.pipe(map(participant => participant.roomName));
+  roomName$ = this.authorizationService.participant$.pipe(map((participant) => participant.roomName));
 
-  constructor(public authorizationService: AuthorizationService) { }
+  constructor(public authorizationService: AuthorizationService) {}
 
   onLeaveRoom() {
     this.authorizationService.leaveRoom().subscribe();
