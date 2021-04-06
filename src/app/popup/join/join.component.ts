@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { ErrorHandlerService } from 'src/app/error-handler.service';
 import { AuthorizationService } from '../authorization/authorization.service';
 import { StorageService } from '../storage.service';
 
@@ -13,6 +12,7 @@ type Step = { name: string; formControlName: string };
   selector: 'app-join',
   templateUrl: './join.component.html',
   styleUrls: ['./join.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class JoinComponent implements OnInit {
   activeStepIndex = 0;
@@ -28,7 +28,6 @@ export class JoinComponent implements OnInit {
     private route: ActivatedRoute,
     public storageService: StorageService,
     private authorizationService: AuthorizationService,
-    private errorHandlerService: ErrorHandlerService
   ) {
     this.joinForm = formBuilder.group({
       roomCode: [null, Validators.required],
