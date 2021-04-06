@@ -4,22 +4,22 @@ import { Apollo } from 'apollo-angular';
 import { BehaviorSubject, forkJoin, from, NEVER, Observable } from 'rxjs';
 import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { restartWebsockets } from 'src/app/graphql.module';
-import { GetParticipantGQL, JoinRoomGQL } from 'src/generated/graphql';
+import { GetParticipantGQL, JoinRoomGQL, Participant } from 'src/generated/graphql';
 import { StorageService } from '../storage.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthorizationService {
-  participantSubject = new BehaviorSubject(undefined);
-  participant$ = this.participantSubject.asObservable();
-  get participant() {
+  participantSubject = new BehaviorSubject<Participant>(undefined);
+  participant$: Observable<Participant> = this.participantSubject.asObservable();
+  get participant(): Participant {
     return this.participantSubject.value;
   }
 
   isAuthenticatedSubject = new BehaviorSubject(false);
-  isAuthenticated$ = this.isAuthenticatedSubject.asObservable();
-  get isAuthenticated() {
+  isAuthenticated$: Observable<boolean> = this.isAuthenticatedSubject.asObservable();
+  get isAuthenticated(): boolean {
     return this.isAuthenticatedSubject.value;
   }
 

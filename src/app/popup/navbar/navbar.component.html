@@ -1,12 +1,20 @@
 <header class="header tui-space_bottom-3">
-  <!-- TODO: Add logo -->
-  <h3>Socrative Collab</h3>
+  <ng-container *ngIf="isAuthenticated$ | async; else unauthenticatedTabs">
+    <h3>
+      <label tuiLabel label="Room">
+        {{ roomName$ | async }}
+      </label>
+    </h3>
 
-  <ng-container *ngIf="authorizationService.isAuthenticated$ | async; else unauthenticatedTabs">
-    <button tuiButton icon="tuiIconCollapse" size="s" (click)="onLeaveRoom()">Leave Room</button>
+    <button tuiButton icon="tuiIconCollapse" size="s" (click)="onLeaveRoom()">
+      Leave Room
+    </button>
   </ng-container>
 
   <ng-template #unauthenticatedTabs>
+    <!-- TODO: Add logo -->
+    <h3>Socrative Collab</h3>
+
     <tui-tabs>
       <a tuiTab routerLink="popup/join" routerLinkActive>
         <tui-svg src="tuiIconLink"></tui-svg>

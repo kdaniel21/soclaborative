@@ -7,7 +7,7 @@
     </div>
   
     <ng-container *ngIf="combinedAnswers$ | async as answers; else noAnswers">
-      <tui-scrollbar>
+      <tui-scrollbar *ngIf="answers.length; else noAnswers">
         <app-answer-item
           *ngFor="let answer of answers"
           [answer]="answer"

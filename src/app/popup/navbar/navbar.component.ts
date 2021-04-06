@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { map } from 'rxjs/operators';
 import { AuthorizationService } from '../authorization/authorization.service';
 
 @Component({
@@ -7,7 +8,10 @@ import { AuthorizationService } from '../authorization/authorization.service';
   styleUrls: ['./navbar.component.scss'],
 })
 export class NavbarComponent {
-  constructor(public authorizationService: AuthorizationService) {}
+  isAuthenticated$ = this.authorizationService.isAuthenticated$;
+  roomName$ = this.authorizationService.participant$.pipe(map(participant => participant.roomName));
+
+  constructor(public authorizationService: AuthorizationService) { }
 
   onLeaveRoom() {
     this.authorizationService.leaveRoom().subscribe();
