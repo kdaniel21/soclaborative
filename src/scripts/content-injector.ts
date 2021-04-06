@@ -1,31 +1,45 @@
 console.log('Content injector running!');
 
+const IFRAME_WIDTH = '350px';
+
 chrome.runtime.onMessage.addListener((message) => {
   if (message === 'toggle') {
     togglePopup();
   }
 });
 
-const normalWidth = '350px';
+let isOpen = false;
 
-const iframe = document.createElement('iframe');
-iframe.style.background = 'white';
-iframe.style.height = '100%';
-iframe.style.width = '0px';
-iframe.style.position = 'fixed';
-iframe.style.top = '0px';
-iframe.style.right = '0px';
-iframe.style.zIndex = '9000000000000000000';
-iframe.src = chrome.extension.getURL('index.html');
+const togglePopup = (): void => {
+  const action = isOpen ? removeIframe : createIframe;
 
-const togglePopup = () => {
+  action();
+
+  isOpen = !isOpen;
+};
+
+const createIframe = () => {
+  const iframe = document.createElement('iframe');
+  iframe.style.background = 'white';
+  iframe.style.height = '100%';
+  iframe.style.width = IFRAME_WIDTH;
+  iframe.style.position = 'fixed';
+  iframe.style.top = '0px';
+  iframe.style.right = '0px';
+  iframe.style.zIndex = '9000000000000000000';
+  iframe.src = chrome.extension.getURL('index.html');
+  iframe.id = 'socrative-collab';
+
   document.body.append(iframe);
 
-  const currentWidth = iframe.style.width;
-  const widthToSet = currentWidth === '0px' ? normalWidth : '0px';
+  const app = document.body.firstElementChild as HTMLElement;
+  app.style.marginRight = IFRAME_WIDTH;
+};
+
+const removeIframe = () => {
+  const iframe = document.querySelector('iframe#socrative-collab');
+  iframe.remove();
 
   const app = document.body.firstElementChild as HTMLElement;
-  app.style.marginRight = widthToSet;
-
-  iframe.style.width = widthToSet;
+  app.style.marginRight = '0';
 };

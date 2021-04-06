@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class StorageService {
-  private storage = this.ngZone.run(() => chrome.storage.sync);
+  private storage = chrome.storage.sync;
 
   constructor(private ngZone: NgZone) {}
 
