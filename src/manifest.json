@@ -3,7 +3,7 @@
   "version": "1.0",
   "description": "Build an Extension with Angular",
   "manifest_version": 2,
-  "permissions": ["activeTab", "webNavigation", "storage", "tabs"],
+  "permissions": ["storage", "tabs"],
   "background": {
     "scripts": ["runtime-es2015.js", "background-es2015.js"]
   },
@@ -11,12 +11,7 @@
   "web_accessible_resources": ["index.html"],
   "content_scripts": [
     {
-      "matches": [
-        "https://b.socrative.com/*",
-        "http://b.socrative.com/*",
-        "https://*/*",
-        "http://*/*"
-      ],
+      "matches": ["https://b.socrative.com/*", "http://b.socrative.com/*"],
       "js": [
         "runtime-es2015.js",
         "content-es2015.js",
