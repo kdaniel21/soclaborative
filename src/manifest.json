@@ -1,7 +1,7 @@
 {
   "name": "Socrative Collab",
   "version": "1.0",
-  "description": "Build an Extension with Angular",
+  "description": "Collaborate easily & effectively on socrative.com",
   "manifest_version": 2,
   "permissions": ["storage", "tabs"],
   "background": {
