@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { Apollo } from 'apollo-angular';
 import { BehaviorSubject, forkJoin, from, NEVER, Observable } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { catchError, map, switchMap, tap } from 'rxjs/operators';
 import { restartWebsockets } from 'src/app/graphql.module';
 import { GetParticipantGQL, JoinRoomGQL } from 'src/generated/graphql';
 import { StorageService } from '../storage.service';
@@ -38,7 +38,8 @@ export class AuthorizationService {
           this.participantSubject.next(res.data.getParticipant);
           this.isAuthenticatedSubject.next(true);
           this.router.navigate(['/collaborate']);
-        })
+        }),
+        catchError(() => NEVER)
       )
       .subscribe();
   }
