@@ -1,6 +1,6 @@
 import { Injectable, NgZone } from '@angular/core';
 import { Observable } from 'rxjs';
-import { debounce, debounceTime, filter, map, switchMap, tap, withLatestFrom } from 'rxjs/operators';
+import { debounceTime, filter, map, switchMap, withLatestFrom } from 'rxjs/operators';
 import { SubmitAnswerGQL } from 'src/generated/graphql';
 import { ContentEvent, EventType } from 'src/scripts/content/events';
 

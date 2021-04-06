@@ -4,10 +4,10 @@
 
 export const environment = {
   production: false,
-  graphqlHttpUri: 'https://socrative-collab-api.herokuapp.com/graphql',
-  graphqlWsUri: 'wss://socrative-collab-api.herokuapp.com/graphql',
-  // graphqlHttpUri: 'http://localhost:3000/graphql',
-  // graphqlWsUri: 'ws://localhost:3000/graphql',
+  // graphqlHttpUri: 'https://socrative-collab-api.herokuapp.com/graphql',
+  // graphqlWsUri: 'wss://socrative-collab-api.herokuapp.com/graphql',
+  graphqlHttpUri: 'http://localhost:3000/graphql',
+  graphqlWsUri: 'ws://localhost:3000/graphql',
 };
 
 /*
