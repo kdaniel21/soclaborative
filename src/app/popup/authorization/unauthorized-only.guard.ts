@@ -11,7 +11,6 @@ export class UnauthorizedOnlyGuard implements CanActivate {
   canActivate(): Observable<boolean | UrlTree> {
     return this.authorizationService.isAuthenticated$.pipe(
       map((isAuthenticated) => (isAuthenticated ? this.router.createUrlTree(['/collaborate']) : true)),
-      tap((res) => console.log('can activate', res))
     );
   }
 }
