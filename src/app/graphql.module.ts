@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { ErrorHandler, NgModule } from '@angular/core';
 import { APOLLO_OPTIONS } from 'apollo-angular';
 import { ApolloClientOptions, InMemoryCache, split } from '@apollo/client/core';
 import { HttpLink } from 'apollo-angular/http';
@@ -9,7 +9,10 @@ import { OperationDefinitionNode } from 'graphql';
 import { environment } from 'src/environments/environment';
 import { Observable } from 'rxjs';
 import { SubscriptionClient } from 'subscriptions-transport-ws';
+import { onError } from '@apollo/client/link/error';
+import { ErrorHandlerService } from './error-handler.service';
 
+// Workaround: with normal Promise the data is not retrieved every single time
 const jwtToken = new Observable<string>((observer) =>
   chrome.storage.sync.get((data) => {
     observer.next(data.jwtToken);
@@ -39,6 +42,16 @@ export const createApollo = (httpLink: HttpLink): ApolloClientOptions<any> => {
     return { headers: { ...headers, Authorization: `Bearer ${token}` } };
   });
 
+  const errorMiddleware = onError(({ graphQLErrors, networkError }) => {
+    if (graphQLErrors) {
+      graphQLErrors.forEach(({ extensions }) => ErrorHandlerService.errorsSubject.next(extensions.code));
+    }
+
+    if (networkError) {
+      ErrorHandlerService.errorsSubject.next('NETWORK_ERROR');
+    }
+  });
+
   let link = split(
     ({ query }) => {
       const { kind, operation } = getMainDefinition(query) as OperationDefinitionNode;
@@ -49,6 +62,7 @@ export const createApollo = (httpLink: HttpLink): ApolloClientOptions<any> => {
   );
 
   link = authMiddleware.concat(link);
+  link = errorMiddleware.concat(link);
   return { link, cache: new InMemoryCache() };
 };
 

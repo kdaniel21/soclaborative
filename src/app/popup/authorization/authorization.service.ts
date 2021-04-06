@@ -59,7 +59,6 @@ export class AuthorizationService {
         this.isAuthenticatedSubject.next(true);
 
         this.router.navigate(['/collaborate']);
-
       })
     );
   }

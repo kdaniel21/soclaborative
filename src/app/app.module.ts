@@ -7,6 +7,7 @@ import { AppComponent } from './app.component';
 import {
   iconsPathFactory,
   TuiModeModule,
+  TuiNotificationModule,
   TuiRootModule,
   TuiThemeNightModule,
   TUI_ICONS_PATH,
@@ -24,6 +25,7 @@ import { HttpClientModule } from '@angular/common/http';
     TuiRootModule,
     TuiThemeNightModule,
     TuiModeModule,
+    TuiNotificationModule,
     PopupModule,
     GraphQLModule,
     HttpClientModule,

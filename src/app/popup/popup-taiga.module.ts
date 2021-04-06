@@ -1,8 +1,10 @@
 import { NgModule } from '@angular/core';
 import {
   TuiButtonModule,
+  TuiErrorModule,
   TuiHintModule,
   TuiLabelModule,
+  TuiNotificationModule,
   TuiScrollbarModule,
   TuiSvgModule,
   TuiTooltipModule,

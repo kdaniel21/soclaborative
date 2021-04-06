@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { ErrorHandlerService } from 'src/app/error-handler.service';
 import { AuthorizationService } from '../authorization/authorization.service';
 import { StorageService } from '../storage.service';
 
@@ -26,7 +27,8 @@ export class JoinComponent implements OnInit {
     formBuilder: FormBuilder,
     private route: ActivatedRoute,
     public storageService: StorageService,
-    private authorizationService: AuthorizationService
+    private authorizationService: AuthorizationService,
+    private errorHandlerService: ErrorHandlerService
   ) {
     this.joinForm = formBuilder.group({
       roomCode: [null, Validators.required],
