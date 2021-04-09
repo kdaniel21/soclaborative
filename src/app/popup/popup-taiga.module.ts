@@ -1,10 +1,8 @@
 import { NgModule } from '@angular/core';
 import {
   TuiButtonModule,
-  TuiErrorModule,
   TuiHintModule,
   TuiLabelModule,
-  TuiNotificationModule,
   TuiScrollbarModule,
   TuiSvgModule,
   TuiTooltipModule,
@@ -16,6 +14,7 @@ import {
   TuiIslandModule,
   TuiStepperModule,
   TuiTabsModule,
+  TUI_VALIDATION_ERRORS,
 } from '@taiga-ui/kit';
 
 const taiga = [
@@ -33,8 +32,19 @@ const taiga = [
   TuiLabelModule,
 ];
 
+const minLengthValidator = ({ requiredLength }) => `It must be at least ${requiredLength} characters!`;
+
 @NgModule({
   imports: [taiga],
   exports: [taiga],
+  providers: [
+    {
+      provide: TUI_VALIDATION_ERRORS,
+      useValue: {
+        required: 'This field is required!',
+        minlength: minLengthValidator,
+      },
+    },
+  ],
 })
 export class PopupTaigaModule {}
