@@ -22,7 +22,7 @@ import { ErrorHandlerService } from './error-handler.service';
       <footer class="tui-space_vertical-2 tui-space_horizontal-2">
         Created with
         <img src="assets/angular.svg" class="icon" />
-        by Daniel Kiss
+        by <a href="https://danielkiss.me" target="_blank">Daniel Kiss</a>
       </footer>
     </tui-root>
   `,

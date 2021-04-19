@@ -20,6 +20,11 @@ tui-root::ng-deep {
         width: 20px;
         vertical-align: middle;
       }
+
+      a {
+        text-decoration: none;
+        color: var(--tui-negative);
+      }
     }
   }
 }
