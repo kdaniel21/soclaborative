@@ -44,7 +44,7 @@ export const createApollo = (httpLink: HttpLink): ApolloClientOptions<any> => {
 
   const errorMiddleware = onError(({ graphQLErrors, networkError }) => {
     if (graphQLErrors) {
-      graphQLErrors.forEach(({ extensions }) => ErrorHandlerService.errorsSubject.next(extensions.code));
+      graphQLErrors.forEach(({ extensions }) => ErrorHandlerService.errorsSubject.next(extensions?.code));
     }
 
     if (networkError) {

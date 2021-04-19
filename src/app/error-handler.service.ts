@@ -22,7 +22,7 @@ export class ErrorHandlerService {
   );
 
   errors$: Observable<string | undefined> = merge(ErrorHandlerService.errorsSubject, this.hideErrorMessage$).pipe(
-    map((errorCode) => (errorCode ? ERROR_MESSAGES[errorCode] || ERROR_MESSAGES[errorCode] : undefined))
+    map((errorCode) => (errorCode ? ERROR_MESSAGES[errorCode] || ERROR_MESSAGES.DEFAULT : undefined))
   );
 
   constructor() {}
