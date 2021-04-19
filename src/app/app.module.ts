@@ -9,6 +9,7 @@ import {
   TuiModeModule,
   TuiNotificationModule,
   TuiRootModule,
+  TuiSvgModule,
   TuiThemeNightModule,
   TUI_ICONS_PATH,
 } from '@taiga-ui/core';
@@ -26,6 +27,7 @@ import { HttpClientModule } from '@angular/common/http';
     TuiThemeNightModule,
     TuiModeModule,
     TuiNotificationModule,
+    TuiSvgModule,
     PopupModule,
     GraphQLModule,
     HttpClientModule,

@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "socrative-collab": {
+    "soclaborative": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -20,7 +20,7 @@
             "customWebpackConfig": {
               "path": "./webpack.config.js"
             },
-            "outputPath": "dist/socrative-collab",
+            "outputPath": "dist/soclaborative",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -85,18 +85,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "socrative-collab:build"
+            "browserTarget": "soclaborative:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "socrative-collab:build:production"
+              "browserTarget": "soclaborative:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "socrative-collab:build"
+            "browserTarget": "soclaborative:build"
           }
         },
         "test": {
@@ -129,16 +129,16 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "socrative-collab:serve"
+            "devServerTarget": "soclaborative:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "socrative-collab:serve:production"
+              "devServerTarget": "soclaborative:serve:production"
             }
           }
         }
       }
     }
   },
-  "defaultProject": "socrative-collab"
+  "defaultProject": "soclaborative"
 }

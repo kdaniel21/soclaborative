@@ -28,7 +28,7 @@ const createIframe = () => {
   iframe.style.right = '0px';
   iframe.style.zIndex = '9000000000000000000';
   iframe.src = chrome.extension.getURL('index.html');
-  iframe.id = 'socrative-collab';
+  iframe.id = 'soclaborative';
 
   document.body.append(iframe);
 
@@ -37,7 +37,7 @@ const createIframe = () => {
 };
 
 const removeIframe = () => {
-  const iframe = document.querySelector('iframe#socrative-collab');
+  const iframe = document.querySelector('iframe#soclaborative');
   iframe.remove();
 
   const app = document.body.firstElementChild as HTMLElement;

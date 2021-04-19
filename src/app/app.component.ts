@@ -7,7 +7,7 @@ import { ErrorHandlerService } from './error-handler.service';
     <tui-root>
       <app-navbar></app-navbar>
 
-      <div class="tui-space_bottom-3 tui-space_horizontal-3">
+      <div id="content" class="tui-space_bottom-3 tui-space_horizontal-3">
         <tui-notification
           *ngIf="error$ | async as error"
           class="tui-space_bottom-4"
@@ -18,6 +18,12 @@ import { ErrorHandlerService } from './error-handler.service';
 
         <router-outlet></router-outlet>
       </div>
+
+      <footer class="tui-space_vertical-2 tui-space_horizontal-2">
+        Created with
+        <img src="assets/angular.svg" class="icon" />
+        by Daniel Kiss
+      </footer>
     </tui-root>
   `,
   styleUrls: ['./app.component.scss'],
@@ -25,5 +31,5 @@ import { ErrorHandlerService } from './error-handler.service';
 export class AppComponent {
   error$ = this.errorHandlerService.errors$;
 
-  constructor(private errorHandlerService: ErrorHandlerService) {}
+  constructor(private errorHandlerService: ErrorHandlerService) { }
 }

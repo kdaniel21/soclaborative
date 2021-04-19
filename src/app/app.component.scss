@@ -7,8 +7,19 @@ tui-root::ng-deep {
     display: flex;
     flex-direction: column;
 
-    & > div {
+    & > #content {
       flex-grow: 1;
+    }
+
+    footer {
+      text-align: right;
+
+      .icon {
+        display: inline-block;
+        height: 20px;
+        width: 20px;
+        vertical-align: middle;
+      }
     }
   }
 }

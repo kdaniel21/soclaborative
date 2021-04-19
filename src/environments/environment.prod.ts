@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  graphqlHttpUri: 'https://socrative-collab-api.herokuapp.com/graphql',
-  graphqlWsUri: 'wss://socrative-collab-api.herokuapp.com/graphql',
+  graphqlHttpUri: 'https://soclaborative-api.herokuapp.com/graphql',
+  graphqlWsUri: 'wss://soclaborative-api.herokuapp.com/graphql',
 };
